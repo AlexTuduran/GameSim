@@ -317,6 +317,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 963194231}
+        m_TargetAssemblyTypeName: FragniteGames.RenderImage, Assembly-CSharp
+        m_MethodName: SetPreviousTexture
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 1
 --- !u!114 &250442434
 MonoBehaviour:
@@ -537,7 +549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &434265669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,7 +621,7 @@ Transform:
   m_GameObject: {fileID: 434265668}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 2.052801, y: 1.1547005, z: 1}
+  m_LocalScale: {x: 2.05442, y: 1.1547005, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -626,7 +638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ef7404ff0aa6e43bd4b6b900fd2fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetRenderer: {fileID: 434265670}
+  targetMaterial: {fileID: 2100000, guid: c5cfa84affc9a554b9dac5186bfc6915, type: 2}
   textures:
   - {fileID: 2800000, guid: aeed0b3caf35b3c4aad05d15a96e73d7, type: 3}
   - {fileID: 2800000, guid: 3f5c13a0329498348a7b315cd6faf05d, type: 3}
@@ -733,6 +745,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194230}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -837,6 +850,35 @@ MonoBehaviour:
   cameraTarget: {fileID: 963194227}
   animate: 0
   animationToggleKeyCode: 97
+  frequency: 0.1
+  magnitude: 0.1
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f214ec5c50c784ca5e26f6fcfb7be9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textures:
+  - {fileID: 2800000, guid: aeed0b3caf35b3c4aad05d15a96e73d7, type: 3}
+  - {fileID: 2800000, guid: 3f5c13a0329498348a7b315cd6faf05d, type: 3}
+  - {fileID: 2800000, guid: e21d1fcfdb5a7104c9ea394ab4a337cc, type: 3}
+  - {fileID: 2800000, guid: 07dd6df3138fd02458c4741de42e641a, type: 3}
+  - {fileID: 2800000, guid: deedbdf058ee2fb4ab64e276145fa618, type: 3}
+  - {fileID: 2800000, guid: cc2db075c8824674e90712bbaf785d40, type: 3}
+  - {fileID: 2800000, guid: 98962404bb4550c4094a21f44d244b1f, type: 3}
+  - {fileID: 2800000, guid: 02695029e188cc14daacd3c57af9dce3, type: 3}
+  - {fileID: 2800000, guid: 00b967c93e099144d8d68d8731eccf7d, type: 3}
+  - {fileID: 2800000, guid: 17106404d10609a4e886548edda3cbf7, type: 3}
+  - {fileID: 2800000, guid: 2fee894b8c5cd12409c260e26f31a5ff, type: 3}
+  animate: 0
+  animationToggleKeyCode: 97
+  zoom: 1
   frequency: 0.1
   magnitude: 0.1
 --- !u!1 &1027237143
@@ -1162,6 +1204,18 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 434265673}
         m_TargetAssemblyTypeName: FragniteGames.RendererMaterialTextureSwitch, Assembly-CSharp
+        m_MethodName: SetNextTexture
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 0
+      - m_Target: {fileID: 963194231}
+        m_TargetAssemblyTypeName: FragniteGames.RenderImage, Assembly-CSharp
         m_MethodName: SetNextTexture
         m_Mode: 1
         m_Arguments:

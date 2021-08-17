@@ -34,12 +34,14 @@ namespace FragniteGames {
             return kShaderName;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void OnValidate() {
             base.OnValidate();
 
             gain = Mathf.Max(0.0f, gain);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void OnRenderImage(RenderTexture src, RenderTexture dst) {
             if (!material) {
                 Graphics.Blit(src, dst);

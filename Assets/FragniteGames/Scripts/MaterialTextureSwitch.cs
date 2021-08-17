@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace FragniteGames {
-    public class RendererMaterialTextureSwitch : MonoBehaviour {
-        public Renderer targetRenderer = null;
+    public class MaterialTextureSwitch : MonoBehaviour {
+        public Material targetMaterial = null;
         public List<Texture2D> textures = null;
 
         private int m_CurrentTextureIndex = 0;
@@ -21,8 +21,7 @@ namespace FragniteGames {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetTexture(Texture2D texture) {
-            var mat = targetRenderer.sharedMaterial;
-            mat.mainTexture = texture;
+            targetMaterial.mainTexture = texture;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
