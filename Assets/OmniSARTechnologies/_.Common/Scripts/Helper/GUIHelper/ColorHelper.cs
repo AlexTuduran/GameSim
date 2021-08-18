@@ -3,16 +3,13 @@
 //
 // Author     : Alex Tuduran
 // Copyright  : OmniSAR Technologies
-// Web        : https://www.omnisar.com
 //
 
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace OmniSARTechnologies.Helper {
-    public static class ColorHelper {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Color HexStrToColor(string hexStrColor, Color fallbackColor = default(Color)) {
+    static public class ColorHelper {
+        static public Color HexStrToColor(string hexStrColor, Color fallbackColor = default(Color)) {
             if (hexStrColor.Length < 1) {
                 return fallbackColor;
             }
@@ -34,8 +31,7 @@ namespace OmniSARTechnologies.Helper {
             );
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string ColoredText(string text, Color color) {
+        static public string ColorText(string text, Color color) {
             return "<color=#" + ColorUtility.ToHtmlStringRGB(color) + ">" + text + "</color>";
         }
     }

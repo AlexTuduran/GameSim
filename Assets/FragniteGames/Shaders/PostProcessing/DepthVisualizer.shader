@@ -1,4 +1,4 @@
-Shader "Hidden/Fragnite Games/Render Depth" {
+Shader "Hidden/Fragnite Games/Depth Visualizer" {
     SubShader {
         Cull Off
         ZWrite Off
@@ -23,7 +23,9 @@ CGPROGRAM
             };
 
             uniform sampler2D _CameraDepthTexture;
-            uniform bool _LinearEye;
+            uniform sampler2D _ColorTexture;
+            uniform bool _ReadFromColorAlpha;
+            uniform bool _Linear;
             uniform float _MinDistance;
             uniform float _MaxDistance;
             uniform float _Gamma;
@@ -43,10 +45,17 @@ CGPROGRAM
             }
 
             float4 frag(v2f i) : SV_Target {
-                float depth = tex2D(_CameraDepthTexture, i.uv).r;
+                float depth = 1.0;
 
                 [branch]
-                if (_LinearEye) {
+                if (_ReadFromColorAlpha) {
+                    depth = tex2D(_ColorTexture, i.uv).a;
+                } else {
+                    depth = tex2D(_CameraDepthTexture, i.uv).r;
+                }
+
+                [branch]
+                if (_Linear) {
                     depth = LinearEyeDepth(depth);
                     depth = inverseLerp(_MinDistance, _MaxDistance, depth);
                 }

@@ -11,7 +11,7 @@ using UnityEngine;
 namespace OmniSARTechnologies.Helper {
     public static class ComponentReporter {
         public static void Report(string text, Color color = default(Color), bool warning = false, MonoBehaviour monoBehaviour = null) {
-            string reportText = ColorHelper.ColoredText(text, color);
+            string reportText = ColorHelper.ColorText(text, color);
 
             if (monoBehaviour) {
                 reportText = string.Format("{0} ({1}): {2}", monoBehaviour.GetType().Name, monoBehaviour.name, reportText);

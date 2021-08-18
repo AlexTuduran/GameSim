@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -7,9 +6,13 @@ namespace FragniteGames {
     public class CameraAnimator : MonoBehaviour {
         public Camera cameraTarget;
         public bool animate = false;
-        public KeyCode animationToggleKeyCode = KeyCode.A;
         public float frequency = 0.1f;
         public float magnitude = 0.1f;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ToggleAnimation() {
+            animate = !animate;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void UpdateAnimation() {
@@ -35,12 +38,6 @@ namespace FragniteGames {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FixedUpdate() {
             UpdateAnimation();
-        }
-
-        public void Update() {
-            if (Input.GetKeyDown(animationToggleKeyCode)) {
-                animate = !animate;
-            }
         }
     }
 }
