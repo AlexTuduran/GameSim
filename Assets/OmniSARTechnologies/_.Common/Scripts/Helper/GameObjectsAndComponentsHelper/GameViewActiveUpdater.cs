@@ -6,7 +6,9 @@
 // Web        : https://www.omnisar.com
 //
 
+using System;
 using System.Runtime.CompilerServices;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -53,10 +55,20 @@ namespace OmniSARTechnologies.Helper {
                     }
 
                     UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+                    //EditorWindow view = EditorWindow.GetWindow<GameView>();
+                    //view.Repaint();
 
                     if (null != OnGameViewUpdated) {
                         OnGameViewUpdated.Invoke();
                     }
+
+                    //Debug.Log("x");
+                    /*
+                    System.Reflection.Assembly assembly = typeof(UnityEditor.EditorWindow).Assembly;
+                    Type type = assembly.GetType( "UnityEditor.GameView" );
+                    EditorWindow gameView = EditorWindow.GetWindow(type);
+                    gameView.Repaint();
+                    */
 
                     m_LastGameViewRefreshT = tNow;
                 }

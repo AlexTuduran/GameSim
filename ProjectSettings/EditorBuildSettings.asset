@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/FragniteGames/Scenes/DefaultScene.unity
+    path: Assets/FragniteGames/Scenes/00-ImageRenderingScene.unity
     guid: 6f76debd186a8bc42bff81f3fbb0a608
   m_configObjects: {}

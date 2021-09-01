@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using OmniSARTechnologies.Helper;
+using Random = UnityEngine.Random;
 
 namespace FragniteGames {
     [ExecuteInEditMode]
@@ -9,24 +9,27 @@ namespace FragniteGames {
 #if UNITY_5_4_OR_NEWER
     [ImageEffectAllowedInSceneView]
 #endif
-    public class FrameRenderer : ImageEffect {
-        [Header("Frames")]
-        public List<Texture2D> colorTextures = null;
-        public List<Texture2D> depthTextures = null;
+    public class FrameRenderer : CameraImageEffect {
+        [Header("Frame Provider")]
+        public FrameProvider frameProvider = null;
 
         [Header("Depth Settings")]
         public bool jitterDepth = true;
+
         [Range(0, 1)] public float depthJitterAmount = 1.0f;
 
         [Header("Animation Settings")]
         public bool animate = false;
+
         public float frequency = 0.1f;
         public float magnitude = 0.1f;
 
         [Header("Frame Transform Settings")]
         public int zoomLevel = kDefaultZoomLevel;
 
-        private int m_CurrentFrameIndex = 0;
+        [Header("Other Settings")]
+        public bool enabledInSceneView = false;
+
         private Vector4 m_DepthJitter = Vector4.zero;
         private float m_AnimatedZoom = 1.0f;
 
@@ -50,16 +53,33 @@ namespace FragniteGames {
             return kShaderName;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GoToFrame(int frameIndex) {
+            frameProvider.GoToFrame(frameIndex);
+        }
+
+        [ContextMenu("Go To First Frame Now")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GoToFirstFrame() {
+            frameProvider.GoToFirstFrame();
+        }
+
+        [ContextMenu("Go To Last Frame Now")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GoToLastFrame() {
+            frameProvider.GoToLastFrame();
+        }
+
         [ContextMenu("Go To Previous Frame Now")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GoToPreviousFrame() {
-            m_CurrentFrameIndex = ((m_CurrentFrameIndex - 1) + colorTextures.Count + colorTextures.Count) % colorTextures.Count;
+            frameProvider.GoToPreviousFrame();
         }
 
         [ContextMenu("Go To Next Frame Now")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GoToNextFrame() {
-            m_CurrentFrameIndex = ((m_CurrentFrameIndex + 1) + colorTextures.Count + colorTextures.Count) % colorTextures.Count;
+            frameProvider.GoToNextFrame();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -114,6 +134,13 @@ namespace FragniteGames {
         public void OnRenderImage(RenderTexture src, RenderTexture dst) {
             if (!material) {
                 Graphics.Blit(src, dst);
+
+                return;
+            }
+
+            if (!enabledInSceneView && (currentCamera.cameraType == CameraType.SceneView)) {
+                Graphics.Blit(src, dst);
+
                 return;
             }
 
@@ -122,8 +149,8 @@ namespace FragniteGames {
 
             zoomLevel = Mathf.Max(1, zoomLevel);
 
-            material.SetTexture(ShaderPropertyToID.kColorTexture, colorTextures[m_CurrentFrameIndex]);
-            material.SetTexture(ShaderPropertyToID.kDepthTexture, depthTextures[m_CurrentFrameIndex]);
+            material.SetTexture(ShaderPropertyToID.kColorTexture, frameProvider.CurrentColorTexture);
+            material.SetTexture(ShaderPropertyToID.kDepthTexture, frameProvider.CurrentDepthTexture);
             material.SetVector(ShaderPropertyToID.kDepthJitter, m_DepthJitter);
             material.SetFloat(ShaderPropertyToID.kZoom, m_AnimatedZoom / (zoomLevel * kZoomStep));
 

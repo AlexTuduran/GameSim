@@ -7,7 +7,7 @@
 //
 
 // For user: Uncomment this to execute rotation while the game is not running
-//#define ___EXECUTE_IN_EDITOR___
+#define ___EXECUTE_IN_EDITOR___
 
 using System.Runtime.CompilerServices;
 using UnityEngine;

@@ -188,11 +188,11 @@ namespace OmniSARTechnologies.LiteFPSCounter {
         public TextEnhancement textEnhancement = TextEnhancement.Outline;
 
         /// <summary>
-        /// This setting controlls how fast the components updates both in terms of visuals and probing. 
+        /// This setting controls how fast the components updates both in terms of visuals and probing. 
         /// <para></para>
         /// <para></para>
         /// Although the framerate probing mechanism is as less intrusive as possible, updating the component 
-        /// too often may result in framerate inacurracy, as the component starts adding some execution 
+        /// too often may result in framerate inaccuracy, as the component starts adding some execution 
         /// overhead that could possibly result in lowering the overall game framerate.
         /// <para></para>
         /// <para></para>
@@ -201,18 +201,18 @@ namespace OmniSARTechnologies.LiteFPSCounter {
         /// <para></para>
         /// <remarks>
         /// Do mind however that the the Update Interval is the interval in which the Text components are
-        /// updated, so higher values will yield better perofmance.
+        /// updated, so higher values will yield better performance.
         /// </remarks>
         /// </summary>
         [Header("Behaviour")]
         [Tooltip(
-            "This setting controlls how fast the components updates both in terms of visuals and probing.\n\r\n\r" +
+            "This setting controls how fast the components updates both in terms of visuals and probing.\n\r\n\r" +
             "Although the framerate probing mechanism is as less intrusive as possible, updating the component " +
-            "too often may result in framerate inacurracy, as the component starts adding some execution " +
+            "too often may result in framerate inaccuracy, as the component starts adding some execution " +
             "overhead that could possibly result in lowering the overall game framerate.\n\r\n\r" +
             "Usually, values between 250 and 1000 ms are common for framerate updates and are as well safe.\n\r\n\r" +
             "Do mind however that the the Update Interval is the interval in which the Text components are " +
-            "updated, so higher values will yield better perofmance."
+            "updated, so higher values will yield better performance."
         )]
         [Range(0.05f, 2.0f)]
         [DisplayNameAttribute("Update Interval")]
@@ -251,12 +251,12 @@ namespace OmniSARTechnologies.LiteFPSCounter {
         /// <summary>
         /// Fluctuation of the registered frame time within the update interval.
         /// </summary>
-        public float frameTimeFlutuation {
+        public float frameTimeFluctuation {
             get {
-                return m_FrameTimeFlutuation;
+                return m_FrameTimeFluctuation;
             }
         }
-        private float m_FrameTimeFlutuation = 0.0f;
+        private float m_FrameTimeFluctuation = 0.0f;
 
         /// <summary>
         /// Registered framerate within the update interval.
@@ -291,12 +291,12 @@ namespace OmniSARTechnologies.LiteFPSCounter {
         /// <summary>
         /// Framerate fluctuation within the update interval.
         /// </summary>
-        public float frameRateFlutuation {
+        public float frameRateFluctuation {
             get {
-                return m_FrameRateFlutuation;
+                return m_FrameRateFluctuation;
             }
         }
-        private float m_FrameRateFlutuation = 0.0f;
+        private float m_FrameRateFluctuation = 0.0f;
 
         private float m_AccumulatedTime;
         private int m_AccumulatedFrames;
@@ -426,7 +426,7 @@ namespace OmniSARTechnologies.LiteFPSCounter {
                 m_FrameRate.ToString("F2"),           (m_FrameTime * 1000.0f).ToString("F3"),
                 m_MinFrameRate.ToString("F2"),        (m_MaxFrameTime * 1000.0f).ToString("F3"),
                 m_MaxFrameRate.ToString("F2"),        (m_MinFrameTime * 1000.0f).ToString("F3"),
-                m_FrameRateFlutuation.ToString("F2"), (m_FrameTimeFlutuation * 1000.0f).ToString("F3")
+                m_FrameRateFluctuation.ToString("F2"), (m_FrameTimeFluctuation * 1000.0f).ToString("F3")
             );
         }
 
@@ -751,8 +751,8 @@ namespace OmniSARTechnologies.LiteFPSCounter {
             m_MinFrameRate = 1.0f / m_MaxFrameTime;
             m_MaxFrameRate = 1.0f / m_MinFrameTime;
 
-            m_FrameTimeFlutuation = Mathf.Abs(m_MaxFrameTime - m_MinFrameTime) / 2.0f;
-            m_FrameRateFlutuation = Mathf.Abs(m_MaxFrameRate - m_MinFrameRate) / 2.0f;
+            m_FrameTimeFluctuation = Mathf.Abs(m_MaxFrameTime - m_MinFrameTime) / 2.0f;
+            m_FrameRateFluctuation = Mathf.Abs(m_MaxFrameRate - m_MinFrameRate) / 2.0f;
 
             UpdateDynamicContent();
 

@@ -45,7 +45,7 @@ CGPROGRAM
             }
 
             float4 frag(v2f i) : SV_Target {
-                return tex2D(_MainTex, i.uv);
+                return tex2D(_MainTex, i.uv) * 0.9995;
             }
 ENDCG
         }

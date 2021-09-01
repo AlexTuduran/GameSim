@@ -26,6 +26,7 @@ CGPROGRAM
             uniform sampler2D _ColorTexture;
             uniform bool _ReadFromColorAlpha;
             uniform bool _Linear;
+            uniform bool _RemapToMinMaxDistance;
             uniform float _MinDistance;
             uniform float _MaxDistance;
             uniform float _Gamma;
@@ -57,7 +58,11 @@ CGPROGRAM
                 [branch]
                 if (_Linear) {
                     depth = LinearEyeDepth(depth);
-                    depth = inverseLerp(_MinDistance, _MaxDistance, depth);
+
+                    [branch]
+                    if (_RemapToMinMaxDistance) {
+                        depth = inverseLerp(_MinDistance, _MaxDistance, depth);
+                    }
                 }
 
                 depth = pow(depth, _Gamma);
