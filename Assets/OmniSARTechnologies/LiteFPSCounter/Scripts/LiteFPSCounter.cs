@@ -10,8 +10,6 @@
 #define __APPLY_SETTINGS_ON_VALIDATE__
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 #if UNITY_EDITOR
@@ -304,9 +302,9 @@ namespace OmniSARTechnologies.LiteFPSCounter {
         private string m_StaticInfoDisplay;
         private string m_DynamicConfigurationFormat;
 
-        private static float MinTime = 0.000000001f; // equivalent to 1B fps
-        private Vector2 TextOffset = new Vector2(8.0f, 8.0f);
-        private float StaticInfoYOffset = 4.0f;
+        private const float kMinTime = 0.000000001f; // equivalent to 1B fps
+        private readonly Vector2 kTextOffset = new Vector2(8.0f, 8.0f);
+        private const float kStaticInfoYOffset = 4.0f;
 
         /// <summary>
         /// Initializes (and resets) the component.
@@ -359,7 +357,15 @@ namespace OmniSARTechnologies.LiteFPSCounter {
         }
 
         private void UpdateContent() {
+#if UNITY_EDITOR
+            if (EditorApplication.isPlaying) {
+                UpdateStaticContentAndData();
+            }
+#else
             UpdateStaticContentAndData();
+#endif // UNITY_EDITOR
+
+            UpdateDynamicContentFormatString();
             UpdateDynamicContent();
         }
 
@@ -374,6 +380,26 @@ namespace OmniSARTechnologies.LiteFPSCounter {
         }
 
         private void UpdateStaticContentAndData() {
+            if (!staticInfoText) {
+                return;
+            }
+
+            staticInfoText.text = string.Format(
+                "{0} {1}" + Environment.NewLine +
+                "{2} MB VRAM" + Environment.NewLine +
+                "{3}" + Environment.NewLine +
+                "{4} MB RAM" + Environment.NewLine +
+                "{5}",
+                ColorHelper.ColorText(SystemInfo.graphicsDeviceName, gpuFieldsColor),
+                ColorHelper.ColorText("[" + SystemInfo.graphicsDeviceType.ToString() + "]", gpuDetailFieldsColor),
+                ColorHelper.ColorText(SystemInfo.graphicsMemorySize.ToString(), gpuFieldsColor),
+                ColorHelper.ColorText(SystemInfo.processorType, cpuFieldsColor),
+                ColorHelper.ColorText(SystemInfo.systemMemorySize.ToString(), cpuFieldsColor),
+                ColorHelper.ColorText(SystemInfo.operatingSystem, sysFieldsColor)
+            );
+        }
+
+        private void UpdateDynamicContentFormatString() {
             m_DynamicConfigurationFormat = string.Format(
                 "{0} FPS {1} ms {2}"   + Environment.NewLine +
                 "{3} FPS {4} ms {5}"   + Environment.NewLine +
@@ -396,24 +422,6 @@ namespace OmniSARTechnologies.LiteFPSCounter {
                 ColorHelper.ColorText("{7}", fpsFluctuationFieldsColor),
                 ColorHelper.ColorText("∿", fpsFluctuationFieldsColor)
             );
-
-            if (!staticInfoText) {
-                return;
-            }
-
-            staticInfoText.text = string.Format(
-                "{0} {1}" + Environment.NewLine +
-                "{2} MB VRAM" + Environment.NewLine +
-                "{3}" + Environment.NewLine +
-                "{4} MB RAM" + Environment.NewLine +
-                "{5}",
-                ColorHelper.ColorText(SystemInfo.graphicsDeviceName, gpuFieldsColor),
-                ColorHelper.ColorText("[" + SystemInfo.graphicsDeviceType.ToString() + "]", gpuDetailFieldsColor),
-                ColorHelper.ColorText(SystemInfo.graphicsMemorySize.ToString(), gpuFieldsColor),
-                ColorHelper.ColorText(SystemInfo.processorType, cpuFieldsColor),
-                ColorHelper.ColorText(SystemInfo.systemMemorySize.ToString(), cpuFieldsColor),
-                ColorHelper.ColorText(SystemInfo.operatingSystem, sysFieldsColor)
-            );
         }
 
         private void UpdateDynamicContent() {
@@ -423,14 +431,14 @@ namespace OmniSARTechnologies.LiteFPSCounter {
 
             dynamicInfoText.text = string.Format(
                 m_DynamicConfigurationFormat,
-                m_FrameRate.ToString("F2"),           (m_FrameTime * 1000.0f).ToString("F3"),
-                m_MinFrameRate.ToString("F2"),        (m_MaxFrameTime * 1000.0f).ToString("F3"),
-                m_MaxFrameRate.ToString("F2"),        (m_MinFrameTime * 1000.0f).ToString("F3"),
+                m_FrameRate.ToString("F2"),            (m_FrameTime * 1000.0f).ToString("F3"),
+                m_MinFrameRate.ToString("F2"),         (m_MaxFrameTime * 1000.0f).ToString("F3"),
+                m_MaxFrameRate.ToString("F2"),         (m_MinFrameTime * 1000.0f).ToString("F3"),
                 m_FrameRateFluctuation.ToString("F2"), (m_FrameTimeFluctuation * 1000.0f).ToString("F3")
             );
         }
 
-        private float GetTextLineHeight(Text text) {
+        private float GetTextLineHeight(Text text, int numLines) {
             if (!text) {
                 return 0;
             }
@@ -439,8 +447,10 @@ namespace OmniSARTechnologies.LiteFPSCounter {
                 return 0;
             }
 
-            TextGenerationSettings generationSettings = text.GetGenerationSettings(text.rectTransform.rect.size); 
-            return text.cachedTextGenerator.GetPreferredHeight("0", generationSettings) * 1.25f / text.canvas.scaleFactor + 0.55f;
+            TextGenerationSettings generationSettings = text.GetGenerationSettings(text.rectTransform.rect.size);
+            float hA = text.cachedTextGenerator.GetPreferredHeight("0Σ⇓⇑∿j|^", generationSettings) * 1.25f / text.canvas.scaleFactor + 0.55f;
+            float hB = text.preferredHeight / numLines;
+            return Mathf.Lerp(hA, hB, 0.65f);
         }
 
         private bool UpdateTextPosition(Text text, Vector2 offset, float staticInfoYOffset, int dynamicInfoNumLines, int staticInfoNumLines, bool staticInfo) {
@@ -449,7 +459,7 @@ namespace OmniSARTechnologies.LiteFPSCounter {
             }
 
             RectTransform rectTransform = text.rectTransform;
-            float lineHeight = GetTextLineHeight(text);
+            float lineHeight = GetTextLineHeight(text, text == dynamicInfoText ? dynamicInfoNumLines : staticInfoNumLines);
             float dynamicInfoHeight = staticInfo ? lineHeight * dynamicInfoNumLines + staticInfoYOffset : 0;
             float staticInfoHeight = staticInfo ? lineHeight * staticInfoNumLines : 0;
 
@@ -580,8 +590,8 @@ namespace OmniSARTechnologies.LiteFPSCounter {
 
             UpdateTextPosition(
                 dynamicInfoText,
-                TextOffset,
-                StaticInfoYOffset,
+                kTextOffset,
+                kStaticInfoYOffset,
                 dynamicInfoNumLines,
                 staticInfoNumLines,
                 false
@@ -589,8 +599,8 @@ namespace OmniSARTechnologies.LiteFPSCounter {
 
             UpdateTextPosition(
                 staticInfoText,
-                TextOffset,
-                StaticInfoYOffset,
+                kTextOffset,
+                kStaticInfoYOffset,
                 dynamicInfoNumLines,
                 staticInfoNumLines,
                 true
@@ -720,8 +730,8 @@ namespace OmniSARTechnologies.LiteFPSCounter {
             m_AccumulatedTime += deltaTime;
             m_AccumulatedFrames++;
 
-            if (deltaTime < MinTime) {
-                deltaTime = MinTime;
+            if (deltaTime < kMinTime) {
+                deltaTime = kMinTime;
             }
 
             if (deltaTime < m_MinFrameTime) {
@@ -737,8 +747,8 @@ namespace OmniSARTechnologies.LiteFPSCounter {
                 return;
             }
 
-            if (m_AccumulatedTime < MinTime) {
-                m_AccumulatedTime = MinTime;
+            if (m_AccumulatedTime < kMinTime) {
+                m_AccumulatedTime = kMinTime;
             }
 
             if (m_AccumulatedFrames < 1) {
