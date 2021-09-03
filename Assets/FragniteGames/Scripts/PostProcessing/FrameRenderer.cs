@@ -13,10 +13,10 @@ namespace FragniteGames {
         [Header("Frame Provider")]
         public FrameProvider frameProvider = null;
 
-        [Header("Depth Settings")]
+        [Header("Jitter Settings")]
+        public bool jitterColor = false;
         public bool jitterDepth = true;
-
-        [Range(0, 1)] public float depthJitterAmount = 1.0f;
+        [Range(0, 1)] public float jitterAmount = 1.0f;
 
         [Header("Animation Settings")]
         public bool animate = false;
@@ -30,7 +30,7 @@ namespace FragniteGames {
         [Header("Other Settings")]
         public bool enabledInSceneView = false;
 
-        private Vector4 m_DepthJitter = Vector4.zero;
+        private Vector4 m_Jitter = Vector4.zero;
         private float m_AnimatedZoom = 1.0f;
 
         private const int kDefaultZoomLevel = 10;
@@ -40,6 +40,7 @@ namespace FragniteGames {
         private static class ShaderPropertyToID {
             public static readonly int kColorTexture = Shader.PropertyToID("_ColorTexture");
             public static readonly int kDepthTexture = Shader.PropertyToID("_DepthTexture");
+            public static readonly int kColorJitter = Shader.PropertyToID("_ColorJitter");
             public static readonly int kDepthJitter = Shader.PropertyToID("_DepthJitter");
             public static readonly int kZoom = Shader.PropertyToID("_Zoom");
         }
@@ -88,6 +89,11 @@ namespace FragniteGames {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ToggleColorJitter() {
+            jitterColor = !jitterColor;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ToggleDepthJitter() {
             jitterDepth = !jitterDepth;
         }
@@ -108,13 +114,9 @@ namespace FragniteGames {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void UpdateDepthJitter() {
-            if (jitterDepth) {
-                m_DepthJitter.x = (Random.value - 0.5f) * depthJitterAmount;
-                m_DepthJitter.y = (Random.value - 0.5f) * depthJitterAmount;
-            } else {
-                m_DepthJitter = Vector4.zero;
-            }
+        private void UpdateJitter() {
+            m_Jitter.x = (Random.value - 0.5f) * jitterAmount;
+            m_Jitter.y = (Random.value - 0.5f) * jitterAmount;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -144,14 +146,15 @@ namespace FragniteGames {
                 return;
             }
 
-            UpdateDepthJitter();
+            UpdateJitter();
             UpdateAnimation();
 
             zoomLevel = Mathf.Max(1, zoomLevel);
 
             material.SetTexture(ShaderPropertyToID.kColorTexture, frameProvider.CurrentColorTexture);
             material.SetTexture(ShaderPropertyToID.kDepthTexture, frameProvider.CurrentDepthTexture);
-            material.SetVector(ShaderPropertyToID.kDepthJitter, m_DepthJitter);
+            material.SetVector(ShaderPropertyToID.kColorJitter, jitterColor ? m_Jitter : Vector4.zero);
+            material.SetVector(ShaderPropertyToID.kDepthJitter, jitterDepth ? m_Jitter : Vector4.zero);
             material.SetFloat(ShaderPropertyToID.kZoom, m_AnimatedZoom / (zoomLevel * kZoomStep));
 
             Graphics.Blit(

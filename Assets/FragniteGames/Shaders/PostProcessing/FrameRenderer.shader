@@ -27,6 +27,7 @@ CGPROGRAM
             uniform sampler2D _ColorTexture;
             uniform float4 _ColorTexture_TexelSize;
             uniform sampler2D _DepthTexture;
+            uniform float2 _ColorJitter;
             uniform float2 _DepthJitter;
             uniform float _Zoom;
 
@@ -71,10 +72,11 @@ CGPROGRAM
                     return 0;
                 }
 
-                o.rgb = tex2D(_ColorTexture, uv);
+                float2 jitteredUV = uv + _ColorJitter * _ColorTexture_TexelSize;
+                o.rgb = tex2D(_ColorTexture, jitteredUV);
 
-                uv += _DepthJitter * _ColorTexture_TexelSize;
-                o.a = tex2D(_DepthTexture, uv).r;
+                jitteredUV = uv + _DepthJitter * _ColorTexture_TexelSize;
+                o.a = tex2D(_DepthTexture, jitteredUV).r;
 
                 return o;
             }
